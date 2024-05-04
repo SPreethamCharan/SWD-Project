@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container mt-4">
+        <div class="d-flex justify-content-between">
+            <h2>Product List</h2>
+            <a class="btn btn-primary py-2" href="{% url 'product_add' %}">Add New Product</a>
+        </div>
+        <table class="table mt-3">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Name</th>
+                    <th>Image</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for product in products %}
+                <tr>
+                    <td>{{ forloop.counter }}</td>  <!-- Display row number -->
+                    <td>{{ product.name }}</td>  <!-- Display product name -->
+                    <td><img src="{{ product.image.url }}" alt="{{ product.name }}" style="max-width: 100px;"></td>  <!-- Display product image -->
+                    <td><a href="{% url 'product_edit' product.pk %}" class="badge text-bg-success text-decoration-none">Edit</a><span class="badge text-bg-danger ms-2" onclick="deleteProduct('{{product.id}}')">Delete</span> 
+                        
+                    </td>  <!-- Display product name -->
+                </tr>
+                <form id="product_delete_{{product.id}}" class="d-none" method="post" action="{% url 'product_delete' product.pk %}">
+                    {% csrf_token %}
+                </form>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <script>
+        function deleteProduct(id){
+            const form = document.getElementById('product_delete_'+id);
+            form.submit();
+        }
+    </script>
+
+{% endblock %}
